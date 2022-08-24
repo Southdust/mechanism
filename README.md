@@ -7,9 +7,6 @@
 
 A multiplatform-friendly common utility module targeting code flexibility.
 
-**⚠️ WARNING! This library depends on Kotlin's experimental language and API versions of 1.8. You can find an example
-in how to enable it at `build-logic/src/main/kotlin/mechanism-mpp-conventions.gradle.kts`**
-
 ## 🎏 Getting Started
 
 You can find information about how to use this library in the classes' documentation! We will go into more details as

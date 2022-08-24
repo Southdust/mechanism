@@ -24,8 +24,6 @@ kotlin {
         compilations.all {
             kotlinOptions {
                 verbose = true
-                apiVersion = "1.8"
-                languageVersion = "1.8"
             }
         }
     }
