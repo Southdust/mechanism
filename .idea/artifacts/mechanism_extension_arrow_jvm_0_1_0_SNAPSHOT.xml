@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="mechanism-extension-arrow-jvm-0.1.0-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/mechanism-extension-arrow/build/libs</output-path>
+    <root id="archive" name="mechanism-extension-arrow-jvm-0.1.0-SNAPSHOT.jar">
+      <element id="module-output" name="mechanism.mechanism-extension-arrow.jvmMain" />
+    </root>
+  </artifact>
+</component>

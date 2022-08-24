@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="mechanism-core-jvm">
+    <output-path>$PROJECT_DIR$/mechanism-core/build/libs</output-path>
+    <root id="archive" name="mechanism-core-jvm.jar">
+      <element id="module-output" name="mechanism.mechanism-core.jvmMain" />
+    </root>
+  </artifact>
+</component>

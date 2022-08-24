@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="kmpp-core-jvm">
+    <output-path>$PROJECT_DIR$/kmpp-core/build/libs</output-path>
+    <root id="archive" name="kmpp-core-jvm.jar">
+      <element id="module-output" name="kmpp.kmpp-core.jvmMain" />
+    </root>
+  </artifact>
+</component>

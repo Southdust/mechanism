@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="mechanism-core-js-0.1.0-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/mechanism-core/build/libs</output-path>
+    <root id="archive" name="mechanism-core-js-0.1.0-SNAPSHOT.jar">
+      <element id="module-output" name="mechanism.mechanism-core.jsMain" />
+    </root>
+  </artifact>
+</component>
