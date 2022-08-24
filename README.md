@@ -17,16 +17,16 @@ soon our website is ready.
 <sup><sub>replace x.y.z with the latest version</sub></sup>
 
 **Gradle (Kotlin DSL)**
-```
-repositories {
-    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-        name = "SonatypeSnapshots"
-    }
-}
-
-dependencies {
-    implementation("org.hexalite", "mechanism-core", "x.y.z")
-    implementation("org.hexalite", "mechanism-extension-arrow", "x.y.z") // arrow extensions, if needed
-}
-```
-
+> ```kotlin
+> repositories {
+>    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+>        name = "SonatypeSnapshots"
+>    }
+> }
+> 
+> dependencies {
+>     implementation("org.hexalite", "mechanism-core", "x.y.z")
+>     // arrow extensions, if needed
+>     implementation("org.hexalite", "mechanism-extension-arrow", "x.y.z")
+> }
+> ```
