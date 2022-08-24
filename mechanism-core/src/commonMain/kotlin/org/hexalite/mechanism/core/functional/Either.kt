@@ -12,22 +12,23 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 /**
- * A wrapper for a value that may be two distinct types. It is inspired by the public functional programming
+ * A wrapper for a value that may be two distinct types. It is inspired by the functional programming
  * paradigm, and it is used to avoid the usage of exceptions on Hexalite to allow a more developer-friendly
  * environment.
  *
- * You can build an [Either] type by using one of the public functions on companion:
+ * You can build an [Either] type by using one of the functions on companion:
  * * [Either.left]   to create an [Either] type bound to the left.
  * * [Either.right]  to create an [Either] type bound to the right.
  * * [Either.decide] to create an [Either] type based on the given value and generics.
- * * [Either.either] to create an [Either] type bound to the left or right (falling back) by an extension public function.
+ * * [Either.either] to create an [Either] type bound to the left or right (falling back) by an extension
+ *   function.
  *
  * An [Either] type is pure, declarative and immutable. You can create another [Either]
- * types from a single one by using map public functions:
+ * types from a single one by using map  functions:
  * * [Either.mapLeft]  to create another [Either] type by using the bound type at [left]
- *                     as a transform public function.
+ *                     as a transform function.
  * * [Either.mapRight] to create another [Either] type by using the bound type at [right]
- *                     as a transform public function.
+ *                     as a transform function.
  *
  * @since 0.1.0
  * @author FromSyntax
@@ -71,7 +72,7 @@ public sealed interface Either<L, R> {
 
     /**
      * Returns a Kotlin's [Result] representation from this [Either] binding.
-     * The [right] side is often referred as the "error" or "failure" type in public functional languages or
+     * The [right] side is often referred as the "error" or "failure" type in functional languages or
      * multi-paradigm languages such as Rust.
      */
     public fun asResult(): Result<L> {
@@ -182,7 +183,7 @@ public sealed interface Either<L, R> {
     ) :
         KSerializer<Either<L, R>> {
         override val descriptor: SerialDescriptor =
-            buildSerialDescriptor("org.hexalite.stronghold.data.public functional.Either", SerialKind.CONTEXTUAL)
+            buildSerialDescriptor("org.hexalite.mechanism.core.functional.Either", SerialKind.CONTEXTUAL)
 
         public override fun serialize(encoder: Encoder, value: Either<L, R>) {
             value.leftOrNull()?.let { encoder.encodeNullableSerializableValue(leftSerializer, it) }
@@ -203,8 +204,9 @@ public sealed interface Either<L, R> {
 }
 
 /**
- * Apply the given [transform] public function to the element bound on the left side ([L]) if it is present.
+ * Apply the given [transform] function to the element bound on the left side ([L]) if it is present.
  * @return A new [Either] type containing the result of this [mapLeft] call.
+ * @param transform
  */
 @Either.Dsl
 @OptIn(ExperimentalContracts::class)
@@ -222,8 +224,9 @@ public inline fun <L, R, T> Either<L, R>.mapLeft(transform: (L) -> T): Either<T,
 }
 
 /**
- * Apply the given [transform] public function to the element bound on the right side ([R]) if it is present.
+ * Apply the given [transform] function to the element bound on the right side ([R]) if it is present.
  * @return A new [Either] type containing the result of this [mapRight] call.
+ * @param transform
  */
 @Either.Dsl
 @OptIn(ExperimentalContracts::class)
@@ -238,6 +241,23 @@ public inline fun <L, R, T> Either<L, R>.mapRight(transform: (R) -> T): Either<L
             )
         )
     )
+}
+
+/**
+ * Apply the given [transformLeft] function to the element bound on the left side ([L]) if it is present.
+ * Apply the given [transformRight] function to the element bound on the right side ([R]) if it is present.
+ * @return A new [Either] type containing the result of this [mapLeft] call.
+ * @param transformLeft
+ * @param transformRight
+ */
+@OptIn(ExperimentalContracts::class)
+@Either.Dsl
+public inline fun <L, R, T1, T2> Either<L, R>.map(transformLeft: (L) -> T1, transformRight: (R) -> T2): Either<T1, T2> {
+    contract {
+        callsInPlace(transformLeft, InvocationKind.AT_MOST_ONCE)
+        callsInPlace(transformRight, InvocationKind.AT_MOST_ONCE)
+    }
+    return if (isLeft()) Either.left(transformLeft(left())) else Either.right(transformRight(right()))
 }
 
 /**
@@ -271,6 +291,24 @@ public inline fun <L, R> Either<L, R>.ifRight(callback: (R) -> Unit): Either<L, 
 }
 
 /**
+ * Executes the given [callbackLeft] if this [Either] type is bound to the right side ([R]).
+ * Executes the given [callbackRight] if this [Either] type is bound to the left side ([R]).
+ * This is similar to 'fire-and-forget'.
+ * @param callbackLeft
+ * @param callbackRight
+ */
+@OptIn(ExperimentalContracts::class)
+@Either.Dsl
+public inline fun <L, R> Either<L, R>.`if`(callbackLeft: (L) -> Unit, callbackRight: (R) -> Unit): Either<L, R> {
+    contract {
+        callsInPlace(callbackLeft, InvocationKind.AT_MOST_ONCE)
+        callsInPlace(callbackRight, InvocationKind.AT_MOST_ONCE)
+    }
+    leftOrNull()?.let(callbackLeft) ?: callbackRight(right())
+    return this
+}
+
+/**
  * Takes the value of another [Either] bound to the left side ([L]).
  * @param other
  */
@@ -295,6 +333,22 @@ public inline fun <L, R> Either<L, R>.takeRight(other: () -> Either<*, R>?): Eit
     }
     return Either.right(other()?.right() ?: return this)
 }
+
+/**
+ * Takes the value of another [Either] bound to the left side ([L]) if exists.
+ * Takes the value of another [Either] bound to the right side ([R]) if exists.
+ * @param other
+ */
+@OptIn(ExperimentalContracts::class)
+@Either.Dsl
+public inline fun <L, R> Either<L, R>.take(other: () -> Either<L, *>?): Either<L, R> {
+    contract {
+        callsInPlace(other, InvocationKind.EXACTLY_ONCE)
+    }
+    val o = other() ?: return this
+    return Either.left(o.leftOrNull() ?: return Either.right(rightOrNull() ?: return this))
+}
+
 
 /**
  * Returns an [Either] type with the value bound to the left side ([L]) as the result of the given
@@ -327,7 +381,7 @@ public inline fun <L, R> Either<L, R>.withRight(callback: () -> R?): Either<L, R
 
 /**
  * Returns the value bound at the left type ([L]) or throws the exception returned by the given [error]
- * public function. This public function is highly inspired by Rust's `Result#expect`.
+ * function. This function is highly inspired by Rust's `Result#expect`.
  * @param error
  */
 @OptIn(ExperimentalContracts::class)
@@ -341,7 +395,7 @@ public inline fun <L> Either<L, *>.leftOrThrow(error: () -> Throwable): L {
 
 /**
  * Returns the value bound at the right type ([R]) or throws the exception returned by the given [error]
- * public function. This public function is highly inspired by Rust's `Result#expect`.
+ * function. This function is highly inspired by Rust's `Result#expect`.
  * @param error
  */
 @OptIn(ExperimentalContracts::class)
@@ -355,7 +409,7 @@ public inline fun <R> Either<*, R>.rightOrThrow(error: () -> Throwable): R {
 
 /**
  * Returns the value bound at the left type ([L]) or returns the default value returned by the given
- * [default] public function.
+ * [default] function.
  * @param default
  */
 @OptIn(ExperimentalContracts::class)
@@ -369,7 +423,7 @@ public inline fun <L> Either<L, *>.leftOrDefault(default: () -> L): L {
 
 /**
  * Returns the value bound at the right type ([R]) or returns the default value returned by the given
- * [default] public function.
+ * [default] function.
  * @param default
  */
 @OptIn(ExperimentalContracts::class)
