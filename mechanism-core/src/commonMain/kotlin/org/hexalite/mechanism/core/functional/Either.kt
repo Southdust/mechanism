@@ -214,13 +214,7 @@ public inline fun <L, R, T> Either<L, R>.mapLeft(transform: (L) -> T): Either<T,
     contract {
         callsInPlace(transform, InvocationKind.AT_MOST_ONCE)
     }
-    return Either.left(
-        transform(
-            leftOrNull() ?: return Either.right(
-                rightOrNull() ?: error("Both Either sides are bound to null.")
-            )
-        )
-    )
+    return Either.left(transform(leftOrNull() ?: return Either.right(right())))
 }
 
 /**
@@ -234,13 +228,7 @@ public inline fun <L, R, T> Either<L, R>.mapRight(transform: (R) -> T): Either<L
     contract {
         callsInPlace(transform, InvocationKind.AT_MOST_ONCE)
     }
-    return Either.right(
-        transform(
-            rightOrNull() ?: return Either.left(
-                leftOrNull() ?: error("Both Either sides are bound to null.")
-            )
-        )
-    )
+    return Either.right(transform(rightOrNull() ?: return Either.left(left())))
 }
 
 /**

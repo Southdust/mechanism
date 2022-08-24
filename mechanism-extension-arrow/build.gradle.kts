@@ -8,6 +8,7 @@ kotlin {
         named("commonMain") {
             dependencies {
                 implementation(mechanism.arrow.core)
+                api(project(":mechanism-core"))
             }
         }
     }
