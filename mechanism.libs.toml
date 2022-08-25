@@ -17,6 +17,7 @@ kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", ve
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version = "2.0.0" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version = "1.0.1" }
+uuid = { module = "com.benasher44:uuid", version = "0.5.0" }
 
 [bundles]
 kotlin = ["kotlinx-serialization", "kotlinx-datetime", "kotlinx-coroutines"]
